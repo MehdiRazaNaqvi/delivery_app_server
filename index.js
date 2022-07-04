@@ -2,7 +2,7 @@ const express = require("express")
 var bodyParser = require('body-parser');
 
 
-const cors = require("cors")
+var cors = require("cors")
 
 const app = express();
 
@@ -12,10 +12,11 @@ app.use(cors());
 
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+// app.use(express.json());
 
-app.use(bodyParser.json());
+// app.use(express.urlencoded({ extended: false }))
+
+// app.use(bodyParser.json());
 
 
 
@@ -69,12 +70,12 @@ app.listen(port, () => {
 
 
 
-    app.get('/get', (req, res) => {
+    app.get('/', (req, res) => {
 
 
-        const data = [{ name: "asad" }, { name: "khan" }]
+ 
 
-        res.send(data)
+        res.send("HELLO WORLD")
 
     })
 
