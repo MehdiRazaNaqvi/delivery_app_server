@@ -268,5 +268,40 @@ app.listen(port, () => {
 
 
 
+    app.post("/adduser", (req, res) => {
+
+        const { MongoClient, ServerApiVersion } = require('mongodb');
+        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
+
+
+
+        client.connect(err => {
+
+
+
+            client.db("database0").collection("bhaiyya").updateOne({ users: Array }, { $push: { "users": req.body } })
+
+
+
+                .then((ans) => console.log(ans))
+
+
+                .catch((err) => console.log(err))
+
+
+        });
+
+
+
+    })
+
+
+    
+
+
+
 
 })
