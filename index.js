@@ -1,6 +1,6 @@
 const express = require("express")
 var bodyParser = require('body-parser');
-
+const stripe = require("stripe")('sk_test_51MGSPSBHamWcZVuTLI0Q8gZ6ceiEIPYMKMOFshnChtnv0PdDdglqgtBnbM0UkfF3eelK1YhhqSUI34gQSVHgvNsz00UYfcmzgU')
 
 var cors = require("cors")
 
@@ -8,8 +8,15 @@ const app = express();
 
 app.use(cors());
 
+require("dotenv").config()
 
+let dbpassword = process.env.DB
 
+const bcrypt = require("bcryptjs")
+
+const User = require("./userSchema.js")
+
+const Brand = require("./brandSchema.js")
 
 
 app.use(express.json());
@@ -26,6 +33,29 @@ const port = process.env.PORT || 4000
 app.listen(port, () => {
 
 
+
+
+
+
+
+
+    app.post('/payment', async (req, res) => {
+
+        const total = req.body.amount
+        console.log(total)
+
+
+        const payment = await stripe.paymentIntents.create({
+            amount: total * 100,
+            currency: "pkr"
+        })
+
+
+
+        res.status(201).send({ clientSecret: payment.client_secret })
+
+
+    })
 
 
 
@@ -75,6 +105,8 @@ app.listen(port, () => {
 
         res.send("HELLO WORLD")
 
+
+
     })
 
 
@@ -86,7 +118,7 @@ app.listen(port, () => {
 
 
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -124,7 +156,7 @@ app.listen(port, () => {
 
 
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -162,23 +194,31 @@ app.listen(port, () => {
 
 
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 
-        console.log(req.body)
 
+        const branddata = new Brand(req.body)
 
         client.connect(err => {
+            console.log(branddata)
+
+
+
+
             // const collection = client.db("database0").collection("bhaiyya");
 
 
 
 
-            client.db("database0").collection("bhaiyya").updateOne({ brands: Array }, { $push: { "brands": req.body } })
+
+            client.db("database0").collection("bhaiyya").updateOne({ brands: Array }, { $push: { "brands": branddata } })
                 .then((ans) => console.log(ans))
                 .catch((err) => console.log(err))
+
+            // .then(() => res.json({ message: "yeah logined succesfully" }))
 
         });
 
@@ -195,7 +235,7 @@ app.listen(port, () => {
 
 
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -231,7 +271,7 @@ app.listen(port, () => {
 
     app.post("/brand-login", (req, res) => {
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -271,22 +311,24 @@ app.listen(port, () => {
     app.post("/adduser", (req, res) => {
 
         const { MongoClient, ServerApiVersion } = require('mongodb');
-        const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 
+        userdata = new User(req.body)
 
 
         client.connect(err => {
 
 
 
-            client.db("database0").collection("bhaiyya").updateOne({ users: Array }, { $push: { "users": req.body } })
+            client.db("database0").collection("bhaiyya").updateOne({ users: Array }, { $push: { "users": userdata } })
 
 
 
                 .then((ans) => console.log(ans))
+
 
 
                 .catch((err) => console.log(err))
@@ -299,7 +341,12 @@ app.listen(port, () => {
     })
 
 
-    
+
+
+
+
+
+
 
 
 
