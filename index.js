@@ -203,22 +203,13 @@ app.listen(port, () => {
         const branddata = new Brand(req.body)
 
         client.connect(err => {
-            console.log(branddata)
-
-
-
-
-            // const collection = client.db("database0").collection("bhaiyya");
-
-
-
 
 
             client.db("database0").collection("bhaiyya").updateOne({ brands: Array }, { $push: { "brands": branddata } })
-                .then((ans) => console.log(ans))
-                .catch((err) => console.log(err))
+                .then((ans) => res.send({ message: "registered", type: "success" }))
+                .catch((err) => res.send(err))
 
-            // .then(() => res.json({ message: "yeah logined succesfully" }))
+
 
         });
 
@@ -241,7 +232,7 @@ app.listen(port, () => {
 
 
 
-    
+
         client.connect(err => {
             // const collection = client.db("database0").collection("bhaiyya");
 
@@ -251,7 +242,7 @@ app.listen(port, () => {
             client.db("database0").collection("bhaiyya").updateOne({ "brands.brand": req.body.brand }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
 
 
-                .then((ans) => res.send({type:"success" , message : "product added" }))
+                .then((ans) => res.send({ type: "success", message: "product added" }))
                 .catch((err) => console.log(err))
 
 
