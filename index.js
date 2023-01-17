@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use(bodyParser.json());
 
-
+const { uploadFile, upload } = require('./helper/s3Multer.jsx')
 
 const port = process.env.PORT || 4000
 
@@ -185,6 +185,9 @@ app.listen(port, () => {
 
     })
 
+    app.use('/images', express.static('images'))
+
+    app.post('/uploadFile', upload.single("file"), uploadFile)
 
 
 
