@@ -240,9 +240,8 @@ app.listen(port, () => {
 
 
 
-        console.log(req.body)
 
-
+    
         client.connect(err => {
             // const collection = client.db("database0").collection("bhaiyya");
 
@@ -252,7 +251,7 @@ app.listen(port, () => {
             client.db("database0").collection("bhaiyya").updateOne({ "brands.brand": req.body.brand }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
 
 
-                .then((ans) => console.log(ans))
+                .then((ans) => res.send({type:"success" , message : "product added" }))
                 .catch((err) => console.log(err))
 
 
