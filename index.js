@@ -18,7 +18,6 @@ const User = require("./userSchema.js")
 
 const Brand = require("./brandSchema.js")
 
-
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }))
@@ -64,7 +63,7 @@ app.listen(port, () => {
 
 
 
-        const { MongoClient, ServerApiVersion } = require('mongodb');
+        const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
         const uri = "mongodb+srv://mehdi:mehdimongodb@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority";
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -170,7 +169,7 @@ app.listen(port, () => {
 
 
 
-            client.db("database0").collection("bhaiyya").updateOne({ cart: Array }, { $push: { "cart": req.body } })
+            client.db("database0").collection("bhaiyya").updateOne({ cart: Array }, { $push: { "cart": { v: req.body.v, brandId: req.body.brandId } } })
                 .then((ans) => console.log(ans))
                 .catch((err) => console.log(err))
 
@@ -228,7 +227,7 @@ app.listen(port, () => {
 
 
 
-        const { MongoClient, ServerApiVersion } = require('mongodb');
+        const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
         const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -242,11 +241,12 @@ app.listen(port, () => {
 
 
 
-            client.db("database0").collection("bhaiyya").updateOne({ "brands.brand": req.body.brand }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
+            client.db("database0").collection("bhaiyya").updateOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
 
 
                 .then((ans) => res.send({ type: "success", message: "product added" }))
                 .catch((err) => console.log(err))
+
 
 
         });
@@ -254,6 +254,40 @@ app.listen(port, () => {
 
 
     })
+
+
+
+    // app.post("/dlt-prod", (req, res) => {
+
+
+
+    //     const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+    //     const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
+    //     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
+
+
+
+    //     client.connect(err => {
+    //         // const collection = client.db("database0").collection("bhaiyya");
+
+
+
+
+    //         client.db("database0").collection("bhaiyya").deleteOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
+
+
+    //             .then((ans) => res.send({ type: "success", message: "product added" }))
+    //             .catch((err) => console.log(err))
+
+
+
+    //     });
+
+
+
+    // })
 
 
 
@@ -269,7 +303,6 @@ app.listen(port, () => {
 
 
 
-        console.log(req.body)
 
 
         // client.connect(err => {
