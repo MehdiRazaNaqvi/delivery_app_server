@@ -234,11 +234,9 @@ app.listen(port, () => {
 
 
 
-
+        console.log(req.body)
         client.connect(err => {
             // const collection = client.db("database0").collection("bhaiyya");
-
-
 
 
             client.db("database0").collection("bhaiyya").updateOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
