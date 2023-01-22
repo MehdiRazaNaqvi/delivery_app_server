@@ -257,37 +257,39 @@ app.listen(port, () => {
 
 
 
-    // app.post("/dlt-prod", (req, res) => {
+    app.post("/dlt-prod", (req, res) => {
 
 
 
-    //     const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-    //     const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
-    //     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
-
-
-
-
-    //     client.connect(err => {
-    //         // const collection = client.db("database0").collection("bhaiyya");
+        const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 
 
-    //         client.db("database0").collection("bhaiyya").deleteOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
 
-
-    //             .then((ans) => res.send({ type: "success", message: "product added" }))
-    //             .catch((err) => console.log(err))
-
-
-
-    //     });
+        client.connect(err => {
+            // const collection = client.db("database0").collection("bhaiyya");
 
 
 
-    // })
+
+            // client.db("database0").collection("bhaiyya").deleteOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
+
+            client.db("database0").collection("bhaiyya").updateOne({ "brands._id": ObjectId(req.body.brand._id) }, { $pull: { "brands.$.products": req.body.e } })
+
+
+                .then((ans) => res.send({ type: "success", message: "product added" }))
+                .catch((err) => console.log(err))
+
+
+
+        });
+
+
+
+    })
 
 
 
