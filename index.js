@@ -33,15 +33,12 @@ app.listen(port, () => {
 
 
 
-
-
-
-
-
     app.post('/payment', async (req, res) => {
 
         const total = req.body.amount
         console.log(total)
+
+
 
 
         const payment = await stripe.paymentIntents.create({
@@ -220,6 +217,32 @@ app.listen(port, () => {
     })
 
 
+    app.post("/delete_brand", (req, res) => {
+
+
+
+        const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+        const uri = `mongodb+srv://mehdi:${dbpassword}@cluster0.xuahs.mongodb.net/?retryWrites=true&w=majority`;
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+        console.log(ObjectId(req.body.id))
+        client.connect(err => {
+
+
+            client.db("database0").collection("bhaiyya").updateOne({}, { $pull: { "brands": { _id: ObjectId(req.body.id) } } })
+                .then((ans) => res.send({ message: "registered", type: "success" }))
+                // .then((ans) => console.log(ans))
+                .catch((err) => res.send(err))
+
+
+
+        });
+
+
+
+    })
+
+
 
 
 
@@ -234,7 +257,7 @@ app.listen(port, () => {
 
 
 
-        console.log(req.body)
+
         client.connect(err => {
             // const collection = client.db("database0").collection("bhaiyya");
 
@@ -242,7 +265,7 @@ app.listen(port, () => {
             client.db("database0").collection("bhaiyya").updateOne({ "brands._id": ObjectId(req.body.brand) }, { $push: { "brands.$.products": { name: req.body.name, img: req.body.img, price: req.body.price } } })
 
 
-                .then((ans) => res.send({ type: "success", message: "product added" }))
+                .then((ans) => res.send({ type: "success", message: ans }))
                 .catch((err) => console.log(err))
 
 
